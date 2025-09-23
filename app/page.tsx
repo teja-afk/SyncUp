@@ -1,7 +1,11 @@
+import CTASection from '@/app/components/landing/CTASection';
 import HowItWorksSection from '@/app/components/landing/HowItWorksSection';
+import MoreFeaturesSection from '@/app/components/landing/MoreFeaturesSection';
+import StatsSection from '@/app/components/landing/StatsSection';
 import FeaturesSection from './components/landing/FeaturesSection';
 import HeroSection from "./components/landing/HeroSection";
 import IntegrationsSection from './components/landing/IntegrationsSection';
+import Footer from '@/app/components/landing/Footer';
 
 export default function Home() {
   return (
@@ -10,6 +14,10 @@ export default function Home() {
       <FeaturesSection/>
       <IntegrationsSection />
       <HowItWorksSection />
+      <StatsSection />
+      <MoreFeaturesSection />
+      <CTASection />
+      <Footer />
     </div>
   );
 }
