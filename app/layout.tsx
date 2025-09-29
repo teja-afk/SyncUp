@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
+import { UsageProvider } from "./contexts/UsageContext";
+import { ConditionalLayout } from "./components/conditional-layout";
+// import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,17 +29,20 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning className="dark">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          >
+          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+        >
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
             enableSystem={false}
             disableTransitionOnChange
-            >
-            {children}
+          >
+            <UsageProvider>
+              <ConditionalLayout>{children}</ConditionalLayout>
+            </UsageProvider>
+            {/* <Toaster /> */}
           </ThemeProvider>
         </body>
       </html>
