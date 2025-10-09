@@ -54,7 +54,13 @@ Create a .env file and add your configuration:
 ```
 DATABASE_URL=your_postgres_url
 OPENAI_API_KEY=your_openai_api_key
-````
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_REDIRECT_URI=your_redirect_uri
+CLERK_WEBHOOK_SECRET=your_clerk_webhook_secret
+PINECONE_API_KEY=your_pinecone_api_key
+RESEND_API_KEY=your_resend_api_key
+```
 Run the App
 ```
 npm run dev
