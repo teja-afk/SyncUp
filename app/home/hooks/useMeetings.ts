@@ -1,6 +1,23 @@
 import { useAuth } from "@clerk/nextjs"
 import { useEffect, useState } from "react"
 
+export interface ConferenceData {
+    conferenceId?: string;
+    entryPoints?: Array<{
+        entryPointType?: string;
+        uri?: string;
+        meetingCode?: string;
+        passcode?: string;
+    }>;
+    conferenceSolution?: {
+        key?: {
+            type?: string;
+        };
+        name?: string;
+        iconUri?: string;
+    };
+}
+
 export interface CalendarEvent {
     id: string
     summary?: string
@@ -11,9 +28,15 @@ export interface CalendarEvent {
     attendees?: Array<{ email: string }>
     location?: string
     hangoutLink?: string
-    conferenceData?: any
+    conferenceData?: ConferenceData
     botScheduled?: boolean
     meetingId?: string
+}
+
+export interface AttendeeInfo {
+    email?: string;
+    name?: string;
+    responseStatus?: string;
 }
 
 export interface PastMeeting {
@@ -23,10 +46,10 @@ export interface PastMeeting {
     meetingUrl: string | null
     startTime: Date
     endTime: Date
-    attendees?: any
+    attendees?: AttendeeInfo[] | string
     transcriptReady: boolean
     recordingUrl?: string | null
-    speakers?: any
+    speakers?: string[] | string
 }
 
 export function useMeetings() {
@@ -161,7 +184,32 @@ export function useMeetings() {
         }
     }
 
-    const getAttendeeList = (attendees: any): string[] => {
+    const refreshCalendar = async () => {
+        setLoading(true)
+        setError('')
+
+        try {
+            // First sync calendar events
+            const syncResponse = await fetch('/api/calendar/sync', {
+                method: 'POST'
+            })
+
+            if (!syncResponse.ok) {
+                const syncError = await syncResponse.json()
+                setError(syncError.error || 'Failed to sync calendar')
+                setLoading(false)
+                return
+            }
+
+            // Then refresh the upcoming events
+            await fetchUpcomingEvents()
+        } catch (error) {
+            setError('Failed to refresh calendar events')
+            setLoading(false)
+        }
+    }
+
+    const getAttendeeList = (attendees: unknown): string[] => {
         if (!attendees) {
             return []
         }
@@ -201,6 +249,7 @@ export function useMeetings() {
         fetchPastMeetings,
         toggleBot,
         directOAuth,
+        refreshCalendar,
         getAttendeeList,
         getInitials
     }

@@ -66,7 +66,7 @@ export async function GET(request: Request) {
       data: {
         googleAccessToken: tokens.access_token,
         googleRefreshToken: tokens.refresh_token,
-        calendarConnected: true,
+        calenderConnected: true,
         googleTokenExpiry: new Date(Date.now() + tokens.expires_in * 1000),
       },
     });

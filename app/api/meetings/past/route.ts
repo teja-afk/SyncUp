@@ -1,8 +1,6 @@
 import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
-import { error } from "console";
 import { NextResponse } from "next/server";
-import { connected } from "process";
 
 export async function GET() {
     try {
@@ -34,6 +32,7 @@ export async function GET() {
         return NextResponse.json({ meetings: pastMeetings })
 
     } catch (error) {
-        return NextResponse.json({ error: 'failed to fetch past meetings', meetings: [] }, { status: 500 })
+        return NextResponse.json({ error: 'failed to fetch past meetings', meetings: [] },
+          { status: 500 })
     }
 }

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
+import { ActionItem } from "@/lib/types";
 
 export async function DELETE(
     request: NextRequest,
@@ -27,15 +28,15 @@ export async function DELETE(
             return NextResponse.json({ error: 'meeting not found' }, { status: 404 })
         }
 
-        const actionItems = (meeting.actionItems as any[]) || []
-        const updatedActionItems = actionItems.filter((item: any) => item.id !== itemIdNumber)
+        const actionItems: ActionItem[] = (meeting.actionItems as unknown as ActionItem[]) || []
+        const updatedActionItems = actionItems.filter((item: ActionItem) => item.id !== itemIdNumber)
 
         await prisma.meeting.update({
             where: {
                 id: meetingId
             },
             data: {
-                actionItems: updatedActionItems
+                actionItems: JSON.parse(JSON.stringify(updatedActionItems))
             }
         })
 

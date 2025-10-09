@@ -15,6 +15,7 @@ interface UpcomingMeetingsProps {
   onRefresh: () => void;
   onToggleBot: (eventId: string) => void;
   onConnectCalendar: () => void;
+  onRefreshCalendar?: () => void;
 }
 
 function UpcomingMeetings({
@@ -27,6 +28,7 @@ function UpcomingMeetings({
   onRefresh,
   onToggleBot,
   onConnectCalendar,
+  onRefreshCalendar,
 }: UpcomingMeetingsProps) {
   return (
     <div>
@@ -85,10 +87,10 @@ function UpcomingMeetings({
         <div className="space-y-3">
           <Button
             className="w-full px-3 py-2 bg-muted rounded-lg hover:bg-muted/80 disabled:opacity-50 transition-colors text-foreground text-sm mb-4 cursor-pointer"
-            onClick={onRefresh}
+            onClick={onRefreshCalendar || onRefresh}
             disabled={loading}
           >
-            {loading ? "Loading..." : "Refresh"}
+            {loading ? "Loading..." : "Refresh Calendar"}
           </Button>
           {upcomingEvents.map((event) => (
             <div

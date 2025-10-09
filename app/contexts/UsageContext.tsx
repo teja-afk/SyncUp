@@ -28,9 +28,9 @@ interface UsageContextType {
 }
 
 const PLAN_LIMITS: Record<string, PlanLimits> = {
-    free: { meetings: 0, chatMessages: 0 },
-    starter: { meetings: 10, chatMessages: 30 },
-    pro: { meetings: 30, chatMessages: 100 },
+    free: { meetings: -1, chatMessages: -1 }, // Unlimited access for all plans since Stripe is removed
+    starter: { meetings: -1, chatMessages: -1 },
+    pro: { meetings: -1, chatMessages: -1 },
     premium: { meetings: -1, chatMessages: -1 }
 }
 
@@ -43,17 +43,9 @@ export function UsageProvider({ children }: { children: ReactNode }) {
 
     const limits = usage ? PLAN_LIMITS[usage.currentPlan] || PLAN_LIMITS.free : PLAN_LIMITS.free
 
-    const canChat = usage ? (
-        usage.currentPlan !== 'free' &&
-        usage.subscriptionStatus === 'active' &&
-        (limits.chatMessages === -1 || usage.chatMessagesToday < limits.chatMessages)
-    ) : false
+    const canChat = true // Always allow chat since Stripe is removed
 
-    const canScheduleMeeting = usage ? (
-        usage.currentPlan !== 'free' &&
-        usage.subscriptionStatus === 'active' &&
-        (limits.meetings === -1 || usage.meetingsThisMonth < limits.meetings)
-    ) : false
+    const canScheduleMeeting = true // Always allow meetings since Stripe is removed
 
     const fetchUsage = async () => {
         if (!userId) return

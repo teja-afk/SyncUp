@@ -18,7 +18,6 @@ export async function POST(request: NextRequest) {
             select: {
                 id: true,
                 currentPlan: true,
-                subscriptionStatus: true,
                 chatMessagesToday: true
             }
         })

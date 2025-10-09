@@ -41,6 +41,3 @@ yarn-error.log*
 next-env.d.ts
 
 /lib/generated/prisma
-
-# YoYo AI version control directory
-.yoyo/

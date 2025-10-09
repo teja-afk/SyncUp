@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/db"
 import { NextResponse } from "next/server"
+import { syncCalendarEventsToDatabase } from "@/lib/integrations/google/calendar"
 
 export async function GET() {
     try {
@@ -18,7 +19,7 @@ export async function GET() {
         }
 
         const now = new Date()
-        const upcomingMeetings = await prisma.meeting.findMany({
+        let upcomingMeetings = await prisma.meeting.findMany({
             where: {
                 userId: user.id,
                 startTime: { gte: now },
@@ -27,6 +28,28 @@ export async function GET() {
             orderBy: { startTime: 'asc' },
             take: 10
         })
+
+        // If user is connected but no upcoming meetings, try to sync from calendar
+        if (user.calenderConnected && user.googleAccessToken && upcomingMeetings.length === 0) {
+            try {
+                console.log('No upcoming meetings found, syncing from Google Calendar...')
+                await syncCalendarEventsToDatabase(userId)
+
+                // Fetch meetings again after sync
+                upcomingMeetings = await prisma.meeting.findMany({
+                    where: {
+                        userId: user.id,
+                        startTime: { gte: now },
+                        isFromCalendar: true
+                    },
+                    orderBy: { startTime: 'asc' },
+                    take: 10
+                })
+            } catch (syncError) {
+                console.error('Error syncing calendar events:', syncError)
+                // Continue with empty results if sync fails
+            }
+        }
 
         const events = upcomingMeetings.map(meeting => ({
             id: meeting.calendarEventId || meeting.id,
@@ -42,7 +65,7 @@ export async function GET() {
 
         return NextResponse.json({
             events,
-            connected: user.calendarConnected,
+            connected: user.calenderConnected,
             source: 'database'
         })
 

@@ -21,6 +21,7 @@ function Home() {
     fetchPastMeetings,
     toggleBot,
     directOAuth,
+    refreshCalendar,
     getAttendeeList,
     getInitials,
   } = useMeetings();
@@ -67,6 +68,7 @@ function Home() {
               onRefresh={fetchUpcomingEvents}
               onToggleBot={toggleBot}
               onConnectCalendar={directOAuth}
+              onRefreshCalendar={refreshCalendar}
             />
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
+import { ActionItem } from "@/lib/types";
 
 export async function POST(
   request: NextRequest,
@@ -26,11 +27,11 @@ export async function POST(
       return NextResponse.json({ error: "meeting not found" }, { status: 404 });
     }
 
-    const existingItems = (meeting.actionItems as any[]) || [];
+    const existingItems: ActionItem[] = (meeting.actionItems as unknown as ActionItem[]) || [];
     const nextId =
-      existingItems.length > 0
-        ? Math.max(...existingItems.map((item: any) => item.id || 0)) + 1
-        : 1;
+       existingItems.length > 0
+         ? Math.max(...existingItems.map((item: ActionItem) => item.id || 0)) + 1
+         : 1;
 
     const newActionItem = {
       id: nextId,
@@ -44,7 +45,7 @@ export async function POST(
         id: meetingId,
       },
       data: {
-        actionItems: updatedActionItems,
+        actionItems: JSON.parse(JSON.stringify(updatedActionItems)),
       },
     });
 

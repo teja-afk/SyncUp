@@ -28,11 +28,7 @@ model User {
   preferredChannelId   String?
   preferredChannelName String?
 
-  currentPlan          String    @default("free")
-  subscriptionStatus   String    @default("inactive")
-  stripeCustomerId     String?
-  stripeSubscriptionId String?
-  billingPeriodStart   DateTime?
+  currentPlan          String    @default("premium")
   meetingsThisMonth    Int       @default(0)
   chatMessagesToday    Int       @default(0)
 
@@ -62,8 +58,8 @@ model Meeting {
   endTime     DateTime
   attendees   Json?
 
-  calenderEventId String? @unique
-  isFromCalender  Boolean @default(false)
+  calendarEventId String? @unique
+  isFromCalendar  Boolean @default(false)
 
   botScheduled Boolean   @default(true)
   botSent      Boolean   @default(false)
@@ -85,7 +81,7 @@ model Meeting {
   ragProcessed   Boolean   @default(false)
   ragProcessedAt DateTime?
 
-  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
@@ -107,7 +103,7 @@ model UserIntegration {
   workspaceId String?
   domain      String?
 
-  created   DateTime @default(now())
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([userId, platform])
@@ -121,5 +117,5 @@ model TranscriptChunk {
   speakerName String?
   vectorId    String?
   createdAt   DateTime @default(now())
-  Meeting     Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  meeting     Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
 }
