@@ -19,9 +19,9 @@ interface ActionItemsListProps {
 function ActionItemsList(props: ActionItemsListProps) {
   return (
     <div className="space-y-4">
-      {props.actionItems.map((item) => (
+      {props.actionItems.map((item, index) => (
         <ActionItemRow
-          key={item.id}
+          key={item.id ?? `action-item-${index}`}
           item={item}
           integrations={props.integrations}
           loading={props.loading}

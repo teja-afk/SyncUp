@@ -29,6 +29,15 @@ export async function GET() {
             take: 10
         })
 
+        console.log(`Found ${pastMeetings.length} past meetings for user ${user.id}`)
+        console.log('Meeting details:', pastMeetings.map(m => ({
+            id: m.id,
+            title: m.title,
+            ended: m.meetingEnded,
+            hasTranscript: !!m.transcript,
+            processed: m.processed
+        })))
+
         return NextResponse.json({ meetings: pastMeetings })
 
     } catch (error) {

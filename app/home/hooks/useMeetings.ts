@@ -126,7 +126,7 @@ export function useMeetings() {
             const result = await response.json()
 
             if (!response.ok) {
-                console.error('faild to fetch past meetings:', result.error)
+                console.error('failed to fetch past meetings:', result.error)
                 return
             }
 

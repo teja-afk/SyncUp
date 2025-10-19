@@ -122,8 +122,8 @@ function ActionItems({
         </h3>
 
         <div className="space-y-4">
-          {actionItems.map((item) => (
-            <div key={item.id} className="group relative">
+          {actionItems.map((item, index) => (
+            <div key={item.id ?? `loading-action-item-${index}`} className="group relative">
               <div className="flex items-center gap-3">
                 <p className="flex-1 text-sm leading-relaxed text-foreground">
                   {item.text}
