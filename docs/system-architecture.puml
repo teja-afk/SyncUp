@@ -1,0 +1,92 @@
+@startuml SyncUp_System_Architecture
+!theme plain
+skinparam componentStyle uml2
+
+' Neutral color scheme for research paper
+skinparam backgroundColor #FFFFFF
+skinparam componentBackgroundColor #FAFAFA
+skinparam databaseBackgroundColor #F0F0F0
+skinparam rectangleBackgroundColor #F5F5F5
+skinparam arrowColor #404040
+skinparam componentBorderColor #808080
+skinparam databaseBorderColor #808080
+skinparam rectangleBorderColor #808080
+skinparam nodeBorderColor #808080
+
+skinparam rectangleFontColor #202020
+skinparam componentFontColor #202020
+skinparam databaseFontColor #202020
+
+skinparam rectangleFontSize 10
+skinparam componentFontSize 10
+skinparam databaseFontSize 10
+skinparam arrowFontSize 10
+
+skinparam padding 8
+skinparam separatorThickness 1
+
+package "Client Layer" {
+    node "Web Frontend\n(React/Next.js)" as client
+}
+
+package "Authentication" {
+    node "Clerk Auth" as auth
+}
+
+package "Application Layer" {
+    node "Next.js API\nLayer" as api
+    database "PostgreSQL\n(Neon)" as db
+    node "Resend\n(Email)" as email
+}
+
+package "AI Processing Engine" {
+    node "Ollama (Local AI)" as ollama {
+        [Mistral 7B] as mistral
+        [Llama2 7B] as llama2
+        [Nomic Embed] as embed
+    }
+
+    node "Whisper (Transcription)" as whisper {
+        [Whisper Base\n74M] as wb
+        [Whisper Large\n1550M] as wl
+        [Speaker\nDiarization] as sd
+    }
+}
+
+package "Data Storage" {
+    database "Pinecone\n768-dim vectors" as pinecone
+    database "AWS S3\nAudio Storage" as s3
+}
+
+package "Meeting Integration" {
+    node "MeetingBaaS\nRecording" as mb
+}
+
+package "Integration Layer" {
+    node "Slack" as slack
+    node "Jira" as jira
+    node "Asana" as asana
+    node "Trello" as trello
+    node "Gmail" as gmail
+}
+
+client --> auth : OAuth
+client --> api : HTTPS
+api --> db : Prisma ORM
+api --> email : Send emails
+api --> ollama : Local AI
+api --> pinecone : Vector search
+api --> s3 : Audio upload
+api --> mb : Webhooks
+mb --> s3 : Store recordings
+
+ollama --> pinecone : Embeddings
+whisper --> pinecone : Transcripts
+
+api --> slack : Post summaries
+api --> jira : Create issues
+api --> asana : Create tasks
+api --> trello : Create cards
+api --> gmail : Send emails
+
+@enduml

@@ -34,7 +34,7 @@ export const UserSchemas = {
   update: z.object({
     email: BaseSchemas.email.optional(),
     name: z.string().min(1).max(100).optional(),
-    preferences: z.record(z.unknown()).optional(),
+    preferences: z.record(z.string(), z.unknown()).optional(),
   }),
 
   login: z.object({
@@ -143,7 +143,7 @@ export const SlackSchemas = {
   event: z.object({
     type: z.string(),
     challenge: z.string().optional(),
-    event: z.record(z.unknown()).optional(),
+    event: z.record(z.string(), z.unknown()).optional(),
   }),
 
   postMeeting: z.object({
@@ -223,7 +223,7 @@ export const ErrorResponseSchema = z.object({
   error: z.object({
     message: z.string(),
     code: z.string().optional(),
-    details: z.record(z.unknown()).optional(),
+    details: z.record(z.string(), z.unknown()).optional(),
     timestamp: BaseSchemas.timestamp.optional(),
   }),
 });
@@ -247,14 +247,14 @@ export const BatchSchemas = {
   create: z.object({
     operations: z.array(z.object({
       type: z.string(),
-      payload: z.record(z.unknown()),
+      payload: z.record(z.string(), z.unknown()),
     })).min(1).max(100),
   }),
 
   query: z.object({
     queries: z.array(z.object({
       endpoint: z.string(),
-      params: z.record(z.unknown()).optional(),
+      params: z.record(z.string(), z.unknown()).optional(),
     })).min(1).max(50),
   }),
 };
@@ -270,8 +270,8 @@ export function validateRequest<T>(
   const result = schema.safeParse(data);
 
   if (!result.success) {
-    const errors = result.error.errors.map(
-      error => `${error.path.join('.')}: ${error.message}`
+    const errors = result.error.issues.map(
+      (error: z.ZodIssue) => `${error.path.join('.')}: ${error.message}`
     );
     return { valid: false, errors };
   }
@@ -286,7 +286,7 @@ export function getValidationError(
   const result = schema.safeParse(data);
 
   if (!result.success) {
-    const first = result.error.errors[0];
+    const first = result.error.issues[0];
     return `${first.path.join('.')}: ${first.message}`;
   }
 
@@ -310,5 +310,8 @@ export const AllSchemas = {
   SuccessResponse: SuccessResponseSchema,
   Batch: BatchSchemas,
 };
+
+// Alias for backwards compatibility
+export const ValidationSchemas = AllSchemas;
 
 export default AllSchemas;

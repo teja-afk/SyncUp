@@ -200,6 +200,7 @@ function LiveMeetingView({
   const summaryInFlightRef = useRef(false);
   const hasSegmentEventsRef = useRef(false);
   const latestSegmentsRef = useRef<LiveSegment[]>([]);
+  const transcriptContainerRef = useRef<HTMLDivElement | null>(null);
 
   const [displayStream, setDisplayStream] = useState<MediaStream | null>(null);
   const [sharing, setSharing] = useState(false);
@@ -509,6 +510,22 @@ function LiveMeetingView({
       }
     };
   }, []);
+
+  // Auto-scroll to bottom when new transcript segments are added
+  useEffect(() => {
+    if (transcriptContainerRef.current) {
+      // Use requestAnimationFrame to ensure DOM has updated
+      const scrollToBottom = () => {
+        if (transcriptContainerRef.current) {
+          transcriptContainerRef.current.scrollTop = transcriptContainerRef.current.scrollHeight;
+        }
+      };
+
+      // Small delay to ensure the new content is rendered
+      const timeoutId = setTimeout(scrollToBottom, 50);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [segments, partial]);
 
   const stopTranscription = async () => {
     // Don't proceed if there's no content to save
@@ -1015,7 +1032,7 @@ function LiveMeetingView({
               </span>
             </div>
           </div>
-          <div className="flex-1 min-h-0 overflow-auto pr-1" style={{ minWidth: 0 }}>
+          <div className="flex-1 min-h-0 overflow-auto pr-1" style={{ minWidth: 0 }} ref={transcriptContainerRef}>
             <div className="space-y-3">
             <div className="rounded-md border border-border/60 bg-muted/30 p-3">
               <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground mb-2">

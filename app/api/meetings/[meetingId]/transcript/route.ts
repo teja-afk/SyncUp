@@ -125,12 +125,17 @@ export async function POST(
       transcriptPayload.endedAt = endedAt;
     }
 
-    let summaryResult: { summary: string; actionItems: Array<{ id: number; text: string }> } | null =
+    let summaryResult: { summary: string; actionItems: Array<{ id: number; text: string }>; title?: string } | null =
       null;
 
     if (summarize) {
       summaryResult = await processMeetingTranscript(segments);
     }
+
+    // Update title only if: summarize is true AND we got a generated title AND current title is empty/default
+    const shouldUpdateTitle = summarize &&
+      summaryResult?.title &&
+      (!meeting.title || meeting.title.trim() === '' || meeting.title === 'Untitled Meeting' || meeting.title.startsWith('Meeting '));
 
     const updated = await prisma.meeting.update({
       where: { id: meetingId },
@@ -140,6 +145,7 @@ export async function POST(
         meetingEnded: true,
         summary: summaryResult?.summary || meeting.summary,
         actionItems: (summaryResult?.actionItems || meeting.actionItems) as any,
+        title: shouldUpdateTitle ? summaryResult!.title : meeting.title,
         processed: summarize ? true : meeting.processed,
         processedAt: summarize ? new Date() : meeting.processedAt,
       },
@@ -149,7 +155,11 @@ export async function POST(
     try {
       const fullTranscript = segments.map(s => s.text).join(' ');
       const ragUserId = meeting.userId || userId || 'dev-user';
-      await processRagTranscript(meetingId, ragUserId, fullTranscript, meeting.title || undefined);
+      // Use generated title if available, otherwise fall back to meeting title
+      const titleForRag = shouldUpdateTitle && summaryResult?.title
+        ? summaryResult.title
+        : (meeting.title || undefined);
+      await processRagTranscript(meetingId, ragUserId, fullTranscript, titleForRag);
       logger.info("meeting_transcript_rag_processed", { requestId, meetingId });
     } catch (ragError) {
       // Don't fail the request if RAG processing fails
@@ -174,6 +184,7 @@ export async function POST(
       transcriptReady: updated.transcriptReady,
       summary: summaryResult?.summary,
       actionItems: summaryResult?.actionItems,
+      title: shouldUpdateTitle ? summaryResult?.title : undefined,
     });
     res.headers.set("X-Request-Id", requestId);
     return res;

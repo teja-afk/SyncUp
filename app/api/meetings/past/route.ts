@@ -1,3 +1,4 @@
+import { generateMeetingTitle } from "@/lib/ai-processor";
 import { prisma } from "@/lib/db";
 import { AppError, ErrorCode, ErrorMessages, createErrorResponse } from "@/lib/errors";
 import { logger } from "@/lib/logger";
@@ -107,6 +108,32 @@ export async function GET(request: NextRequest) {
 
         console.log('Found past meetings:', pastMeetings.length, pastMeetings);
 
+        // Generate titles for meetings that need them (on-the-fly)
+        const meetingsWithGeneratedTitles = await Promise.all(
+            pastMeetings.map(async (meeting) => {
+                // Check if title needs to be generated
+                const needsGeneratedTitle = !meeting.title ||
+                    meeting.title.trim() === '' ||
+                    meeting.title === 'Untitled Meeting' ||
+                    meeting.title.startsWith('Meeting ');
+
+                if (needsGeneratedTitle && meeting.transcript) {
+                    try {
+                        const generatedTitle = await generateMeetingTitle(meeting.transcript);
+                        return {
+                            ...meeting,
+                            title: generatedTitle,
+                            titleGenerated: true // Flag to indicate title was generated on-the-fly
+                        };
+                    } catch (error) {
+                        console.error('Error generating title for meeting:', meeting.id, error);
+                        return meeting;
+                    }
+                }
+                return meeting;
+            })
+        );
+
         const duration = performance.now() - startTime;
         logger.info('meetings_past_success', {
             requestId,
@@ -117,8 +144,8 @@ export async function GET(request: NextRequest) {
 
         // Performance: Add cache headers for client-side caching
         const response = NextResponse.json({
-            meetings: pastMeetings,
-            count: pastMeetings.length
+            meetings: meetingsWithGeneratedTitles,
+            count: meetingsWithGeneratedTitles.length
         });
 
         // Cache for 60 seconds on CDN/client

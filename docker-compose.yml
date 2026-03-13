@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    # REPLACE 'registry.gitlab.com/YOUR-GROUP/YOUR-PROJECT' with your actual GitLab registry path
+    # You can find this in GitLab: Settings → Packages & Registries → Container Registry
+    image: registry.gitlab.com/twsdevops8955711/sync-up-fork:latest
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.docker
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# To run with a database, add a database service:
+# db:
+#   image: postgres:15-alpine
+#   environment:
+#     POSTGRES_USER: user
+#     POSTGRES_PASSWORD: password
+#     POSTGRES_DB: syncup
+#   volumes:
+#     - postgres_data:/var/lib/postgresql/data
+#   healthcheck:
+#     test: ["CMD-SHELL", "pg_isready -U user -d syncup"]
+#     interval: 10s
+#     timeout: 5s
+#     retries: 5
+
+# volumes:
+#   postgres_data:

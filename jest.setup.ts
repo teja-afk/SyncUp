@@ -4,25 +4,25 @@
  */
 
 // Mock environment variables for tests
-process.env.DATABASE_URL = 'postgresql://test:test@localhost/test';
-process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = 'test_key';
-process.env.CLERK_SECRET_KEY = 'test_secret';
-process.env.CLERK_WEBHOOK_SECRET = 'test_webhook';
-process.env.GOOGLE_CLIENT_ID = 'test_google_id';
-process.env.GOOGLE_CLIENT_SECRET = 'test_google_secret';
-process.env.GOOGLE_REDIRECT_URI = 'http://localhost:3000/api/auth/google/callback';
-process.env.PINECONE_API_KEY = 'test_pinecone_key';
-process.env.PINECONE_INDEX_NAME = 'test-index';
-process.env.AWS_REGION = 'us-east-1';
-process.env.AWS_ACCESS_KEY_ID = 'test_aws_key';
-process.env.AWS_SECRET_ACCESS_KEY = 'test_aws_secret';
-process.env.S3_BUCKET_NAME = 'test-bucket';
-process.env.RESEND_API_KEY = 'test_resend_key';
-process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000';
-process.env.NODE_ENV = 'test';
+(process.env as any).DATABASE_URL = 'postgresql://test:test@localhost/test';
+(process.env as any).NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = 'test_key';
+(process.env as any).CLERK_SECRET_KEY = 'test_secret';
+(process.env as any).CLERK_WEBHOOK_SECRET = 'test_webhook';
+(process.env as any).GOOGLE_CLIENT_ID = 'test_google_id';
+(process.env as any).GOOGLE_CLIENT_SECRET = 'test_google_secret';
+(process.env as any).GOOGLE_REDIRECT_URI = 'http://localhost:3000/api/auth/google/callback';
+(process.env as any).PINECONE_API_KEY = 'test_pinecone_key';
+(process.env as any).PINECONE_INDEX_NAME = 'test-index';
+(process.env as any).AWS_REGION = 'us-east-1';
+(process.env as any).AWS_ACCESS_KEY_ID = 'test_aws_key';
+(process.env as any).AWS_SECRET_ACCESS_KEY = 'test_aws_secret';
+(process.env as any).S3_BUCKET_NAME = 'test-bucket';
+(process.env as any).RESEND_API_KEY = 'test_resend_key';
+(process.env as any).NEXT_PUBLIC_APP_URL = 'http://localhost:3000';
+(process.env as any).NODE_ENV = 'test';
 
 // Global test utilities
-global.testUtils = {
+(global as any).testUtils = {
   /**
    * Create a mock user
    */

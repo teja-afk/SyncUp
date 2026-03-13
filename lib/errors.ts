@@ -34,6 +34,11 @@ export enum ErrorCode {
   INTEGRATION_SYNC_FAILED = 'INT_003',
   CALENDAR_SYNC_ERROR = 'INT_004',
   SLACK_SEND_ERROR = 'INT_005',
+  INTEGRATION_ERROR = 'INT_006',
+  INTEGRATION_NOT_CONFIGURED = 'INT_007',
+
+  // User errors
+  USER_NOT_FOUND = 'USER_001',
 
   // Rate limit errors (4290-4299)
   RATE_LIMIT_EXCEEDED = 'LIMIT_001',
@@ -242,6 +247,37 @@ export const ErrorMessages = {
     userMessage: `The AI model is not available. Please try again later.`,
     statusCode: 503,
   }),
+
+  // Integration errors
+  INTEGRATION_ERROR: {
+    code: ErrorCode.INTEGRATION_ERROR,
+    message: 'Integration error occurred',
+    userMessage: 'An error occurred with this integration. Please try again later.',
+    statusCode: 500,
+  },
+
+  INTEGRATION_NOT_CONFIGURED: {
+    code: ErrorCode.INTEGRATION_NOT_CONFIGURED,
+    message: 'Integration not configured',
+    userMessage: 'This integration is not set up. Please configure it in your settings.',
+    statusCode: 400,
+  },
+
+  // User errors
+  USER_NOT_FOUND: {
+    code: ErrorCode.USER_NOT_FOUND,
+    message: 'User not found',
+    userMessage: 'User not found',
+    statusCode: 404,
+  },
+
+  // Alias for internal server error
+  INTERNAL_ERROR: {
+    code: ErrorCode.INTERNAL_SERVER_ERROR,
+    message: 'Internal server error',
+    userMessage: 'An unexpected error occurred. Please try again later.',
+    statusCode: 500,
+  },
 
   // Generic
   INTERNAL_SERVER_ERROR: {

@@ -41,3 +41,9 @@ yarn-error.log*
 next-env.d.ts
 
 /lib/generated/prisma
+
+# Exclude other project directories
+Desktop/meet-bot/
+Desktop/meetai/
+Desktop/sudoku/
+Desktop/Sudoku Solver/

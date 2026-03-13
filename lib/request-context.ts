@@ -39,7 +39,9 @@ export function createRequestContext(
   // Cleanup old contexts
   if (contextMap.size > MAX_CONTEXTS) {
     const firstKey = contextMap.keys().next().value;
-    contextMap.delete(firstKey);
+    if (firstKey) {
+      contextMap.delete(firstKey);
+    }
   }
 
   return context;
@@ -130,3 +132,8 @@ export function withRequestLogging(
 export function generateRequestId(): string {
   return randomUUID();
 }
+
+/**
+ * Alias for generateRequestId
+ */
+export const getRequestId = generateRequestId;

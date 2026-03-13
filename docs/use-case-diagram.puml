@@ -1,0 +1,193 @@
+@startuml SyncUp Fork - Use Case Diagram
+!theme plain
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+left to right direction
+
+actor "User" as user
+actor "Admin" as admin
+actor "Google Calendar" as gcal
+actor "Slack" as slack
+actor "Jira" as jira
+actor "Asana" as asana
+actor "Trello" as trello
+actor "Gmail" as gmail
+actor "MeetingBaaS" as baas
+
+rectangle "SyncUp Fork - Meeting Assistant" {
+    usecase "Sign In" as UC1
+    usecase "Sign Up" as UC2
+    usecase "Manage Profile" as UC3
+
+    usecase "Create Meeting" as UC4
+    usecase "View Meetings" as UC5
+    usecase "View Past Meetings" as UC6
+    usecase "View Upcoming Meetings" as UC7
+    usecase "Delete Meeting" as UC8
+    usecase "Toggle Bot" as UC9
+    usecase "View Meeting Details" as UC10
+    usecase "View Transcript" as UC11
+    usecase "View Action Items" as UC12
+    usecase "Manage Action Items" as UC13
+
+    usecase "Sync Calendar" as UC14
+    usecase "Check Calendar Status" as UC15
+    usecase "Refresh Calendar" as UC16
+
+    usecase "Record Meeting" as UC17
+    usecase "Receive Webhook" as UC18
+    usecase "Process Audio" as UC19
+
+    usecase "Generate Summary" as UC20
+    usecase "Generate Final Summary" as UC21
+    usecase "Extract Action Items" as UC22
+    usecase "Process for RAG" as UC23
+
+    usecase "Chat with AI (All Meetings)" as UC24
+    usecase "Chat with AI (Specific Meeting)" as UC25
+    usecase "Search Meetings" as UC26
+
+    usecase "Send Email" as UC27
+    usecase "Check Emails" as UC28
+    usecase "List Emails" as UC29
+
+    usecase "Configure Bot Settings" as UC30
+    usecase "Upload Bot Avatar" as UC31
+    usecase "View Usage Statistics" as UC32
+
+    usecase "Setup Slack Integration" as UC33
+    usecase "Post to Slack" as UC34
+    usecase "Receive Slack Events" as UC35
+    usecase "Disconnect Slack" as UC36
+
+    usecase "Setup Jira Integration" as UC37
+    usecase "Authenticate Jira" as UC38
+    usecase "Create Jira Tasks" as UC39
+    usecase "Disconnect Jira" as UC40
+
+    usecase "Setup Asana Integration" as UC41
+    usecase "Authenticate Asana" as UC42
+    usecase "Create Asana Tasks" as UC43
+    usecase "Disconnect Asana" as UC44
+
+    usecase "Setup Trello Integration" as UC45
+    usecase "Authenticate Trello" as UC46
+    usecase "Create Trello Cards" as UC47
+    usecase "Disconnect Trello" as UC48
+
+    usecase "Setup Gmail Integration" as UC49
+    usecase "Check Gmail Status" as UC50
+    usecase "Disconnect Gmail" as UC51
+
+    usecase "Setup Google Calendar" as UC52
+    usecase "Disconnect Google Calendar" as UC53
+
+    usecase "Create Sample Meetings" as UC54
+    usecase "Fix Action Items" as UC55
+    usecase "Fix Audio URLs" as UC56
+    usecase "View Integration Status" as UC57
+}
+
+user --> UC1
+user --> UC2
+user --> UC3
+
+user --> UC4
+user --> UC5
+user --> UC6
+user --> UC7
+user --> UC8
+user --> UC9
+user --> UC10
+user --> UC11
+user --> UC12
+user --> UC13
+
+user --> UC14
+user --> UC15
+user --> UC16
+
+user --> UC24
+user --> UC25
+user --> UC26
+
+user --> UC27
+user --> UC28
+user --> UC29
+
+user --> UC30
+user --> UC31
+user --> UC32
+
+user --> UC33
+user --> UC34
+user --> UC36
+
+user --> UC37
+user --> UC40
+
+user --> UC41
+user --> UC44
+
+user --> UC45
+user --> UC48
+
+user --> UC49
+user --> UC51
+
+user --> UC52
+user --> UC53
+
+user --> UC57
+
+admin --> UC54
+admin --> UC55
+admin --> UC56
+
+gcal --> UC14
+gcal --> UC15
+gcal --> UC16
+gcal --> UC52
+gcal --> UC53
+
+baas --> UC17
+baas --> UC18
+baas --> UC19
+
+slack --> UC33
+slack --> UC35
+slack --> UC36
+
+jira --> UC37
+jira --> UC38
+jira --> UC40
+
+asana --> UC41
+asana --> UC42
+asana --> UC44
+
+trello --> UC45
+trello --> UC46
+trello --> UC48
+
+gmail --> UC49
+gmail --> UC50
+gmail --> UC51
+
+UC17 ..> UC18 : <<includes>>
+UC18 ..> UC19 : <<includes>>
+UC19 ..> UC20 : <<includes>>
+UC20 ..> UC21 : <<includes>>
+UC20 ..> UC22 : <<includes>>
+UC22 ..> UC23 : <<includes>>
+
+UC27 ..> UC12 : <<includes>>
+
+UC34 ..> UC12 : <<includes>>
+
+UC39 ..> UC12 : <<includes>>
+UC43 ..> UC12 : <<includes>>
+UC47 ..> UC12 : <<includes>>
+
+@enduml

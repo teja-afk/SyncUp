@@ -7,13 +7,24 @@ import { verifySlackSignature } from './utils/verifySlackSignature';
 import { logger } from '@/lib/logger';
 import { generateRequestId } from '@/lib/request-context';
 
-const app = new App({
-    signingSecret: process.env.SLACK_SIGNING_SECRET!,
-    authorize: authorizeSlack
-});
+// Lazy initialization to avoid build-time errors when env vars are not set
+let app: App | null = null;
 
-app.event('app_mention', handleAppMention);
-app.message(handleMessage);
+function getSlackApp(): App {
+    if (!app) {
+        if (!process.env.SLACK_SIGNING_SECRET) {
+            throw new Error('SLACK_SIGNING_SECRET is not set');
+        }
+        app = new App({
+            signingSecret: process.env.SLACK_SIGNING_SECRET,
+            authorize: authorizeSlack
+        });
+
+        app.event('app_mention', handleAppMention);
+        app.message(handleMessage);
+    }
+    return app;
+}
 
 export async function POST(req: NextRequest) {
     const requestId = generateRequestId();
@@ -60,7 +71,7 @@ export async function POST(req: NextRequest) {
             eventType: bodyJson.type,
         });
 
-        await app.processEvent({
+        await getSlackApp().processEvent({
             body: bodyJson,
             ack: async () => { }
         });
